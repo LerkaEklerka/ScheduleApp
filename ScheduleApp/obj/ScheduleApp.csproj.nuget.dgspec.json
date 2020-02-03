@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\LerkaEklerka\\Desktop\\ScheduleApp\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj": {}
+    "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\LerkaEklerka\\Desktop\\ScheduleApp\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj": {
+    "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\LerkaEklerka\\Desktop\\ScheduleApp\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
+        "projectUniqueName": "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
         "projectName": "ScheduleApp",
-        "projectPath": "C:\\Users\\LerkaEklerka\\Desktop\\ScheduleApp\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
-        "packagesPath": "C:\\Users\\LerkaEklerka\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\LerkaEklerka\\Desktop\\ScheduleApp\\ScheduleApp\\ScheduleApp\\obj\\",
+        "projectPath": "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
+        "packagesPath": "C:\\Users\\Valentin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\LerkaEklerka\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Valentin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -55,6 +55,14 @@
               "version": "[3.1.1, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[3.1.1, )"
             }
