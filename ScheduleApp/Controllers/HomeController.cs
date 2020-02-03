@@ -44,7 +44,7 @@ namespace ScheduleApp.Controllers
 
                 LessonDTO dto = new LessonDTO
                 {
-                    Classroom = lesson.ClassroomName,
+                    Classroom = dbContext.Classrooms.Find(lesson.ClassroomId).Name,
                     Group = dbContext.Groups.Find(lesson.GroupId).Name,
                     Subject = dbContext.Subjects.Find(lesson.SubjectId).Name,
                     Teacher = user != null ? user.UserName : ""

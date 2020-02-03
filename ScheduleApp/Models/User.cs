@@ -9,7 +9,6 @@ namespace ScheduleApp.Models
 {
     public class User : IdentityUser
     {
-
         public int? GroupId { get; set; }
     }
 }

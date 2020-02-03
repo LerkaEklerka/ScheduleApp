@@ -11,7 +11,7 @@ namespace ScheduleApp.Models
         public int SubjectId { get; set; }
         public string TeacherId { get; set; }
         public int GroupId { get; set; }
-        public string ClassroomName { get; set; }
+        public int ClassroomId { get; set; }
         public string Type { get; set; }
         public int Number { get; set; }
         public DateTime Date { get; set; }

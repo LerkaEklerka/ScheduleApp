@@ -39,6 +39,9 @@ namespace ScheduleApp.Controllers
         {
             if (lessonDTO != null)
             {
+                Classroom classroom = new Classroom { Name = lessonDTO.Classroom };
+                dbContext.Classrooms.Add(classroom);
+
                 Subject subject = new Subject { Name = lessonDTO.Subject };
                 dbContext.Subjects.Add(subject);
 
@@ -51,7 +54,7 @@ namespace ScheduleApp.Controllers
                 {
                     SubjectId = subject.Id,
                     GroupId = group.Id,
-                    ClassroomName = lessonDTO.Classroom,
+                    ClassroomId = classroom.Id,
                     TeacherId = userManager.GetUserId(User)
                 };
 

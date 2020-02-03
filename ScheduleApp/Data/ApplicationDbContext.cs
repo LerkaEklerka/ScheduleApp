@@ -13,6 +13,8 @@ namespace ScheduleApp.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<User> CustomUsers { get; set; }
+        public DbSet<Classroom> Classrooms { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
