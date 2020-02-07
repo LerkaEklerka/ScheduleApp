@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ScheduleApp.Commons.DTOModels;
 using ScheduleApp.Data;
 using ScheduleApp.Models;
 
@@ -29,30 +28,9 @@ namespace ScheduleApp.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<LessonDTO> lessonDTOList = mapToDTOList(dbContext.Lessons);
-            ViewBag.Lessons = lessonDTOList;
+            IEnumerable<Lesson> lessons = dbContext.Lessons;
+            ViewBag.Lessons = lessons;
             return View();
-        }
-
-        private List<LessonDTO> mapToDTOList(DbSet<Lesson> lessons)
-        {
-            List<LessonDTO> lessonDTOList = new List<LessonDTO>();
-
-            foreach (Lesson lesson in lessons)
-            {
-                var user = userManager.Users.FirstOrDefault(u => u.Id == lesson.TeacherId);
-
-                LessonDTO dto = new LessonDTO
-                {
-                    Classroom = dbContext.Classrooms.Find(lesson.ClassroomId).Name,
-                    Group = dbContext.Groups.Find(lesson.GroupId).Name,
-                    Subject = dbContext.Subjects.Find(lesson.SubjectId).Name,
-                    Teacher = user != null ? user.UserName : ""
-                };
-
-                lessonDTOList.Add(dto);
-            }
-            return lessonDTOList;
         }
 
         public IActionResult Privacy()

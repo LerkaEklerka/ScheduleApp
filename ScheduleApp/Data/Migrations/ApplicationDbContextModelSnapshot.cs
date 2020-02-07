@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ScheduleApp.Data;
 
-namespace ScheduleApp.Data.Migrations
+namespace ScheduleApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -152,37 +152,56 @@ namespace ScheduleApp.Data.Migrations
 
             modelBuilder.Entity("ScheduleApp.Models.Classroom", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ClassroomId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
 
-                    b.HasKey("Id");
+                    b.HasKey("ClassroomId");
 
                     b.ToTable("Classrooms");
                 });
 
             modelBuilder.Entity("ScheduleApp.Models.Group", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("GroupId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(7)")
+                        .HasMaxLength(7);
 
-                    b.HasKey("Id");
+                    b.HasKey("GroupId");
 
                     b.ToTable("Groups");
                 });
 
+            modelBuilder.Entity("ScheduleApp.Models.GroupSubject", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupId", "SubjectId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("GroupSubjects");
+                });
+
             modelBuilder.Entity("ScheduleApp.Models.Lesson", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("LessonId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -212,27 +231,37 @@ namespace ScheduleApp.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TeacherId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("LessonId");
+
+                    b.HasIndex("ClassroomId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("ScheduleApp.Models.Subject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("SubjectId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
-                    b.HasKey("Id");
+                    b.HasKey("SubjectId");
 
                     b.ToTable("Subjects");
                 });
@@ -256,8 +285,18 @@ namespace ScheduleApp.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -293,6 +332,8 @@ namespace ScheduleApp.Data.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -354,6 +395,53 @@ namespace ScheduleApp.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ScheduleApp.Models.GroupSubject", b =>
+                {
+                    b.HasOne("ScheduleApp.Models.Group", "Group")
+                        .WithMany("GroupSubjects")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ScheduleApp.Models.Subject", "Subject")
+                        .WithMany("GroupSubjects")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ScheduleApp.Models.Lesson", b =>
+                {
+                    b.HasOne("ScheduleApp.Models.Classroom", "Classroom")
+                        .WithMany("Lessons")
+                        .HasForeignKey("ClassroomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ScheduleApp.Models.Group", "Group")
+                        .WithMany("Lessons")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ScheduleApp.Models.Subject", "Subject")
+                        .WithMany("Lessons")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ScheduleApp.Models.User", "Teacher")
+                        .WithMany("Lessons")
+                        .HasForeignKey("TeacherId");
+                });
+
+            modelBuilder.Entity("ScheduleApp.Models.User", b =>
+                {
+                    b.HasOne("ScheduleApp.Models.Group", "Group")
+                        .WithMany("Students")
+                        .HasForeignKey("GroupId");
                 });
 #pragma warning restore 612, 618
         }

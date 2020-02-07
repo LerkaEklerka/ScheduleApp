@@ -47,12 +47,20 @@ namespace ScheduleApp.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Ім'я")]
+            public string Name { get; set; }
+
+            [Required]
+            [Display(Name = "Прізвище")]
+            public string Surname { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Електронна адреса")]
             public string Email { get; set; }
 
             [Required]
-            [Display(Name = "Ім'я та прізвище")]
+            [Display(Name = "Логін")]
             public string Username { get; set; }
 
             [Required]
@@ -79,7 +87,12 @@ namespace ScheduleApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.Username, Email = Input.Email };
+                var user = new User { 
+                    UserName = Input.Username, 
+                    Email = Input.Email,
+                    FirstName = Input.Name,
+                    LastName = Input.Surname
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

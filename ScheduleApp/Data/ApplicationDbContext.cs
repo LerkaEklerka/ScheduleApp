@@ -14,10 +14,19 @@ namespace ScheduleApp.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<User> CustomUsers { get; set; }
         public DbSet<Classroom> Classrooms { get; set; }
+        public DbSet<GroupSubject> GroupSubjects { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GroupSubject>()
+                .HasKey(gs => new { gs.GroupId, gs.SubjectId });
+            base.OnModelCreating(modelBuilder);
+            
         }
     }
 }
