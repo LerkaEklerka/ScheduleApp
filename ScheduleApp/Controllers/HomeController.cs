@@ -26,10 +26,18 @@ namespace ScheduleApp.Controllers
             userManager = _userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<Lesson> lessons = dbContext.Lessons;
-            ViewBag.Lessons = lessons;
+            var applicationDbContext = dbContext.Lessons
+                .Include(l => l.Classroom)
+                .Include(l => l.Group)
+                .Include(l => l.Subject)
+                .Include(l => l.Teacher);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        public IActionResult Manage()
+        {
             return View();
         }
 

@@ -231,3 +231,6 @@ C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\bin\Debug\netcoreapp3.1\r
 C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Home\Manage.cshtml.g.cs
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\User\Index.cshtml.g.cs
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Shared\ErrorMessage.cshtml.g.cs

@@ -14,7 +14,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control"></select>
+                <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<LessonType>()">
+                    <option selected="selected" value=""></option>
+                </select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,35 +30,33 @@
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StartLesson" class="control-label"></label>
-                <input asp-for="StartLesson" class="form-control" />
-                <span asp-validation-for="StartLesson" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndLesson" class="control-label"></label>
-                <input asp-for="EndLesson" class="form-control" />
-                <span asp-validation-for="EndLesson" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Info" class="control-label"></label>
                 <input asp-for="Info" class="form-control" />
                 <span asp-validation-for="Info" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SubjectId" class="control-label"></label>
-                <select asp-for="SubjectId" class ="form-control" asp-items="ViewBag.SubjectId"></select>
+                <select asp-for="SubjectId" class="form-control" asp-items="ViewBag.SubjectId">
+                    <option selected="selected" value=""></option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class ="form-control" asp-items="ViewBag.GroupId"></select>
+                <select asp-for="GroupId" class="form-control" asp-items="ViewBag.GroupId">
+                    <option selected="selected" value=""></option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="TeacherId" class="control-label"></label>
-                <select asp-for="TeacherId" class ="form-control" asp-items="ViewBag.TeacherId"></select>
+                <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId">
+                    <option selected="selected" value=""></option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="ClassroomId" class="control-label"></label>
-                <select asp-for="ClassroomId" class ="form-control" asp-items="ViewBag.ClassroomId"></select>
+                <select asp-for="ClassroomId" class="form-control" asp-items="ViewBag.ClassroomId">
+                    <option selected="selected" value=""></option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

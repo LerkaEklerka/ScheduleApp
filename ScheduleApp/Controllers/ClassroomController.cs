@@ -58,9 +58,19 @@ namespace ScheduleApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(classroom);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var existedClassroom = await _context.Classrooms
+                .FirstOrDefaultAsync(m => m.Name == classroom.Name);
+
+                if (existedClassroom == null)
+                {
+                    _context.Add(classroom);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                } 
+                else
+                {
+                    ViewData["ErrorMessage"] = "Error during classroom adding. A classroom with the same name already exists";
+                }
             }
             return View(classroom);
         }

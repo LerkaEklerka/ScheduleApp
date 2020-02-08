@@ -22,7 +22,11 @@ namespace ScheduleApp.Controllers
         // GET: Lesson
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Lessons.Include(l => l.Classroom).Include(l => l.Group).Include(l => l.Subject).Include(l => l.Teacher);
+            var applicationDbContext = _context.Lessons
+                .Include(l => l.Classroom)
+                .Include(l => l.Group)
+                .Include(l => l.Subject)
+                .Include(l => l.Teacher);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -51,10 +55,7 @@ namespace ScheduleApp.Controllers
         // GET: Lesson/Create
         public IActionResult Create()
         {
-            ViewData["ClassroomId"] = new SelectList(_context.Classrooms, "ClassroomId", "Name");
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name");
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "Name");
-            ViewData["TeacherId"] = new SelectList(_context.CustomUsers, "Id", "Id");
+            PrepareLessonView();
             return View();
         }
 
@@ -65,16 +66,33 @@ namespace ScheduleApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LessonId,Type,Number,Date,StartLesson,EndLesson,Info,SubjectId,GroupId,TeacherId,ClassroomId")] Lesson lesson)
         {
+            if (lesson.Number == 1)
+            {
+                lesson.StartLesson = new DateTime(
+                    lesson.Date.Year, 
+                    lesson.Date.Month, 
+                    lesson.Date.Day, 
+                    9, 0, 0);
+
+                lesson.EndLesson = new DateTime(
+                    lesson.Date.Year,
+                    lesson.Date.Month,
+                    lesson.Date.Day,
+                    10, 20, 0);
+            }
+            else
+            {
+                //todo should be a corresponding error message instead of this workaround
+                lesson.StartLesson = DateTime.Now;
+                lesson.EndLesson = DateTime.Now;
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(lesson);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClassroomId"] = new SelectList(_context.Classrooms, "ClassroomId", "Name", lesson.ClassroomId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name", lesson.GroupId);
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "Name", lesson.SubjectId);
-            ViewData["TeacherId"] = new SelectList(_context.CustomUsers, "Id", "Id", lesson.TeacherId);
+            PrepareLessonView();
             return View(lesson);
         }
 
@@ -91,10 +109,7 @@ namespace ScheduleApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClassroomId"] = new SelectList(_context.Classrooms, "ClassroomId", "Name", lesson.ClassroomId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name", lesson.GroupId);
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "Name", lesson.SubjectId);
-            ViewData["TeacherId"] = new SelectList(_context.CustomUsers, "Id", "Id", lesson.TeacherId);
+            PrepareLessonView();
             return View(lesson);
         }
 
@@ -130,10 +145,7 @@ namespace ScheduleApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClassroomId"] = new SelectList(_context.Classrooms, "ClassroomId", "Name", lesson.ClassroomId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name", lesson.GroupId);
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "Name", lesson.SubjectId);
-            ViewData["TeacherId"] = new SelectList(_context.CustomUsers, "Id", "Id", lesson.TeacherId);
+            PrepareLessonView();
             return View(lesson);
         }
 
@@ -173,6 +185,14 @@ namespace ScheduleApp.Controllers
         private bool LessonExists(int id)
         {
             return _context.Lessons.Any(e => e.LessonId == id);
+        }
+
+        private void PrepareLessonView()
+        {
+            ViewData["ClassroomId"] = new SelectList(_context.Classrooms, "ClassroomId", "Name");
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name");
+            ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "Name");
+            ViewData["TeacherId"] = new SelectList(_context.CustomUsers, "Id", "FullName");
         }
     }
 }

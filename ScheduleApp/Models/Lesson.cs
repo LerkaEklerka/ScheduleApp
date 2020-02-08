@@ -6,16 +6,16 @@ namespace ScheduleApp.Models
     public enum LessonType
     {
         [Display(Name = "Лекція")]
-        Lecture,
+        Lecture = 1,
 
         [Display(Name = "Практика")]
-        Practise,
+        Practise = 2,
 
         [Display(Name = "Семінар")]
-        Seminar,
+        Seminar = 3,
 
         [Display(Name = "Не визначений")]
-        NonSpecified
+        NonSpecified = 4
     }
     public class Lesson
     {
@@ -51,16 +51,24 @@ namespace ScheduleApp.Models
         [Display(Name = "Додаткова інформація")]
         public string Info { get; set; }
 
+        [Display(Name = "Предмет")]
         public int SubjectId { get; set; }
+        [Display(Name = "Предмет")]
         public virtual Subject Subject { get; set; }
 
+        [Display(Name = "Група")]
         public int GroupId { get; set; }
+        [Display(Name = "Група")]
         public virtual Group Group { get; set; }
 
+        [Display(Name = "Вчитель")]
         public string TeacherId { get; set; }
+        [Display(Name = "Вчитель")]
         public virtual User Teacher { get; set; }
 
+        [Display(Name = "Кабінет")]
         public int ClassroomId { get; set; }
+        [Display(Name = "Кабінет")]
         public virtual Classroom Classroom { get; set; }
     }
 }
