@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Models;
+using ScheduleApp.ViewModels;
 
 namespace ScheduleApp.Data
 {

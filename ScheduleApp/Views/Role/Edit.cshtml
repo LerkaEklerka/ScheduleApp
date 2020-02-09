@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model ScheduleApp.ViewModels.ChangeRoleViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Зміна ролі для користувача @Model.UserEmail</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="userId" value="@Model.UserId" />
+    @foreach (IdentityRole role in Model.AllRoles)
+    {
+        <div class="form-check">
+            <input class="form-check-input"
+                   id="roleId @role.Name"
+                   type="checkbox"
+                   name="roles"
+                   value="@role.Name"
+                   @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />
+            <label class="form-check-label" for="roleId @role.Name">@role.Name</label>
+        </div>
+    }
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+</form>

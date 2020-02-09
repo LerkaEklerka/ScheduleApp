@@ -60,10 +60,6 @@ namespace ScheduleApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [Display(Name = "Логін")]
-            public string Username { get; set; }
-
-            [Required]
             [StringLength(100, ErrorMessage = "Цей {0} повинен містити мінімум {2} і максимум {1} символів.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Пароль")]
@@ -88,7 +84,7 @@ namespace ScheduleApp.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new User { 
-                    UserName = Input.Username, 
+                    UserName = Input.Email, 
                     Email = Input.Email,
                     FirstName = Input.Name,
                     LastName = Input.Surname

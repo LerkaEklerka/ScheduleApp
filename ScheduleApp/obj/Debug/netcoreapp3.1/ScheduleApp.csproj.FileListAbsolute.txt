@@ -234,3 +234,8 @@ C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\bin\Debug\netcoreapp3.1\r
 C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Home\Manage.cshtml.g.cs
 C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\User\Index.cshtml.g.cs
 C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Shared\ErrorMessage.cshtml.g.cs
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Role\Index.cshtml.g.cs
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Role\Create.cshtml.g.cs
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Role\UserList.cshtml.g.cs
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\Role\Edit.cshtml.g.cs
+C:\Users\Valentin\source\repos\ScheduleApp\ScheduleApp\obj\Debug\netcoreapp3.1\Razor\Views\User\Edit.cshtml.g.cs
