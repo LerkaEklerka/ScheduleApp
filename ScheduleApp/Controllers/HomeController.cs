@@ -27,13 +27,18 @@ namespace ScheduleApp.Controllers
             userManager = _userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? date)
         {
+            var filterDate = date != null ? date : DateTime.Today;
+
             var applicationDbContext = dbContext.Lessons
+                .Where(l => l.Date == filterDate)
                 .Include(l => l.Classroom)
                 .Include(l => l.Group)
                 .Include(l => l.Subject)
                 .Include(l => l.Teacher);
+
+            ViewData["FilterDate"] = filterDate;
             return View(await applicationDbContext.ToListAsync());
         }
 
