@@ -8966,19 +8966,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Valentin\\.nuget\\packages\\": {}
+    "C:\\Users\\nasti\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
+      "projectUniqueName": "C:\\Users\\nasti\\Documents\\GitHub\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
       "projectName": "ScheduleApp",
-      "projectPath": "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
-      "packagesPath": "C:\\Users\\Valentin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Valentin\\source\\repos\\ScheduleApp\\ScheduleApp\\obj\\",
+      "projectPath": "C:\\Users\\nasti\\Documents\\GitHub\\ScheduleApp\\ScheduleApp\\ScheduleApp.csproj",
+      "packagesPath": "C:\\Users\\nasti\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nasti\\Documents\\GitHub\\ScheduleApp\\ScheduleApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Valentin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\nasti\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
