@@ -41,13 +41,13 @@ namespace ScheduleApp
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = "1077286413754-c9dm69mus2fr32q7t351pobjaadifrmi.apps.googleusercontent.com";
-                    options.ClientSecret = "64u7L4lwohGd6rfEOzQNNUUH";
+                    options.ClientId = "";
+                    options.ClientSecret = "";
                 })
                 .AddFacebook(facebookOptions => 
                 {
-                    facebookOptions.AppId = "517740799120037";
-                    facebookOptions.AppSecret = "0fa8e1a0e63377317ec41e09a740ab12";
+                    facebookOptions.AppId = "";
+                    facebookOptions.AppSecret = "";
                 });
         }
 
