@@ -37,6 +37,18 @@ namespace ScheduleApp
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "1077286413754-c9dm69mus2fr32q7t351pobjaadifrmi.apps.googleusercontent.com";
+                    options.ClientSecret = "64u7L4lwohGd6rfEOzQNNUUH";
+                })
+                .AddFacebook(facebookOptions => 
+                {
+                    facebookOptions.AppId = "517740799120037";
+                    facebookOptions.AppSecret = "0fa8e1a0e63377317ec41e09a740ab12";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
