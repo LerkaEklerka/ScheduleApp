@@ -26,7 +26,7 @@ namespace ScheduleApp.Models
         public LessonType Type { get; set; }
 
         [Required]
-        [Range(0, 8)]
+        [Range(0, 7)]
         [Display(Name = "Номер пари(не по змінам)")]
         public int Number { get; set; }
 
