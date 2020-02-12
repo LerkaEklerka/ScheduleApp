@@ -14,6 +14,7 @@ using ScheduleApp.Models;
 
 namespace ScheduleApp.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;

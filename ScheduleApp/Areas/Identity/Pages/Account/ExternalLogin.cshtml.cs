@@ -52,6 +52,16 @@ namespace ScheduleApp.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            [Required]
+            [StringLength(50)]
+            [Display(Name = "Ім'я")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [StringLength(50)]
+            [Display(Name = "Прізвище")]
+            public string LastName { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -122,7 +132,12 @@ namespace ScheduleApp.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.Email, Email = Input.Email };
+                var user = new User {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName
+                };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
