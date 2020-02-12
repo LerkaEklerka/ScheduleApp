@@ -14,6 +14,7 @@ using ScheduleApp.Models;
 
 namespace ScheduleApp.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
@@ -30,7 +31,7 @@ namespace ScheduleApp.Controllers
         public async Task<IActionResult> Index(DateTime? date)
         {
             var filterDate = date != null ? date : DateTime.Today;
-
+            //todo
             var applicationDbContext = dbContext.Lessons
                 .Where(l => l.Date == filterDate)
                 .Include(l => l.Classroom)
