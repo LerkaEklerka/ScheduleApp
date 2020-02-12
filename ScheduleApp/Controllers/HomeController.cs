@@ -30,16 +30,26 @@ namespace ScheduleApp.Controllers
         public async Task<IActionResult> Index(DateTime? date)
         {
             var filterDate = date != null ? date : DateTime.Today;
+            User user = dbContext.CustomUsers.SingleOrDefault(u => u.UserName == User.Identity.Name);
 
-            var applicationDbContext = dbContext.Lessons
+            if (user != null)
+            {
+                var applicationDbContext = dbContext.Lessons
                 .Where(l => l.Date == filterDate)
+                .Where(l => l.GroupId == user.GroupId)
                 .Include(l => l.Classroom)
                 .Include(l => l.Group)
                 .Include(l => l.Subject)
                 .Include(l => l.Teacher);
 
-            ViewData["FilterDate"] = filterDate;
-            return View(await applicationDbContext.ToListAsync());
+                ViewData["FilterDate"] = filterDate;
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                return Error();
+            }
+                        
         }
 
         

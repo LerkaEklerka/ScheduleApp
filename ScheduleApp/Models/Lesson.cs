@@ -29,7 +29,7 @@ namespace ScheduleApp.Models
         [Range(0, 8)]
         [Display(Name = "Номер пари(не по змінам)")]
         public int Number { get; set; }
-
+       
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
