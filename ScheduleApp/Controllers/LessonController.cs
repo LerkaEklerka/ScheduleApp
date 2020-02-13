@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Data;
 using ScheduleApp.Models;
+using ScheduleApp.Constants;
+
 
 namespace ScheduleApp.Controllers
 {
@@ -68,132 +70,56 @@ namespace ScheduleApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LessonId,Type,Number,Date,StartLesson,EndLesson,Info,SubjectId,GroupId,TeacherId,ClassroomId")] Lesson lesson)
         {
-            if (lesson.Number == 0)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    7, 30, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    8, 50, 0);
-            }
-            else if (lesson.Number == 1)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year, 
-                    lesson.Date.Month, 
-                    lesson.Date.Day, 
-                    9, 0, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    10, 20, 0);
-            }
-            else if (lesson.Number == 2)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    10, 30, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    11, 50, 0);
-            }
-            else if (lesson.Number == 3)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    12, 10, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    13, 30, 0);
-            }
-            else if (lesson.Number == 4)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    13, 40, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    15, 00, 0);
-            }
-            else if (lesson.Number == 5)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    15, 10, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    16, 30, 0);
-            }
-            else if (lesson.Number == 6)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    16, 40, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    18, 00, 0);
-            }
-            else if (lesson.Number == 7)
-            {
-                lesson.StartLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    18, 10, 0);
-
-                lesson.EndLesson = new DateTime(
-                    lesson.Date.Year,
-                    lesson.Date.Month,
-                    lesson.Date.Day,
-                    19, 00, 0);
-            }
-            else
-            {
-                //todo should be a corresponding error message instead of this workaround
-                lesson.StartLesson = DateTime.Now;
-                lesson.EndLesson = DateTime.Now;
-            }
             if (ModelState.IsValid)
             {
-                _context.Add(lesson);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (lesson.Number == 0)
+                {
+                    SetLessonTimes(lesson, 7, 30, 8, 50);
+                }
+                else if (lesson.Number == 1)
+                {
+                    SetLessonTimes(lesson, 9, 0, 10, 20);
+                }
+                else if (lesson.Number == 2)
+                {
+                    SetLessonTimes(lesson, 9, 30, 11, 50);
+                }
+                else if (lesson.Number == 3)
+                {
+                    SetLessonTimes(lesson, 12, 10, 13, 30);
+                }
+                else if (lesson.Number == 4)
+                {
+                    SetLessonTimes(lesson, 13, 40, 15, 0);
+                }
+                else if (lesson.Number == 5)
+                {
+                    SetLessonTimes(lesson, 15, 10, 16, 30);
+                }
+                else if (lesson.Number == 6)
+                {
+                    SetLessonTimes(lesson, 16, 40, 18, 0);
+                }
+                else if (lesson.Number == 7)
+                {
+                    SetLessonTimes(lesson, 18, 10, 19, 0);
+                }
+                else
+                {
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX +"Such a pair does not exist. Try entering from 0 to 7.";
+                    
+                }
+                if (!ViewData.ContainsKey(ScheduleConstants.ERROR_MESSAGE_KEY))
+                {
+                    _context.Add(lesson);
+                   await _context.SaveChangesAsync();
+                   return RedirectToAction(nameof(Index));
+                }
             }
+
             PrepareLessonView();
             return View(lesson);
+
         }
 
         // GET: Lesson/Edit/5
@@ -293,6 +219,20 @@ namespace ScheduleApp.Controllers
             ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name");
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "Name");
             ViewData["TeacherId"] = new SelectList(_context.CustomUsers, "Id", "FullName");
+        }
+        private void SetLessonTimes(Lesson lesson, int startH, int startM, int endH, int endM)
+        {
+            lesson.StartLesson = new DateTime(
+                lesson.Date.Year,
+                lesson.Date.Month,
+                lesson.Date.Day,
+                startH, startM, 0);
+
+            lesson.EndLesson = new DateTime(
+                lesson.Date.Year,
+                lesson.Date.Month,
+                lesson.Date.Day,
+                endH, endM, 0);
         }
     }
 }
