@@ -22,16 +22,27 @@ namespace ScheduleApp.Controllers
         private readonly ILogger<HomeController> logger;
         private readonly ApplicationDbContext dbContext;
         private readonly UserManager<User> userManager;
+        private readonly SignInManager<User> signInManager;
 
-        public HomeController(ILogger<HomeController> _logger, ApplicationDbContext _dbContext, UserManager<User> _userManager)
+        public HomeController(
+            ILogger<HomeController> _logger, 
+            ApplicationDbContext _dbContext, 
+            UserManager<User> _userManager,
+            SignInManager<User> _signInManager)
         {
             logger = _logger;
             dbContext = _dbContext;
             userManager = _userManager;
+            signInManager = _signInManager;
         }
 
         public async Task<IActionResult> Index(DateTime? date)
         {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction(nameof(ErrorAuth));
+            }
+
             var filterDate = date != null ? date : DateTime.Today;
             User user = dbContext.CustomUsers.SingleOrDefault(u => u.UserName == User.Identity.Name);
 
@@ -60,7 +71,7 @@ namespace ScheduleApp.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(ErrorAuth));
+                return RedirectToAction(nameof(Error));
             }
 
         }
@@ -74,6 +85,12 @@ namespace ScheduleApp.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
