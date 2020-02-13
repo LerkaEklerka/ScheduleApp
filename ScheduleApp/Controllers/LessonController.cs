@@ -72,43 +72,8 @@ namespace ScheduleApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (lesson.Number == 0)
-                {
-                    SetLessonTimes(lesson, 7, 30, 8, 50);
-                }
-                else if (lesson.Number == 1)
-                {
-                    SetLessonTimes(lesson, 9, 0, 10, 20);
-                }
-                else if (lesson.Number == 2)
-                {
-                    SetLessonTimes(lesson, 9, 30, 11, 50);
-                }
-                else if (lesson.Number == 3)
-                {
-                    SetLessonTimes(lesson, 12, 10, 13, 30);
-                }
-                else if (lesson.Number == 4)
-                {
-                    SetLessonTimes(lesson, 13, 40, 15, 0);
-                }
-                else if (lesson.Number == 5)
-                {
-                    SetLessonTimes(lesson, 15, 10, 16, 30);
-                }
-                else if (lesson.Number == 6)
-                {
-                    SetLessonTimes(lesson, 16, 40, 18, 0);
-                }
-                else if (lesson.Number == 7)
-                {
-                    SetLessonTimes(lesson, 18, 10, 19, 0);
-                }
-                else
-                {
-                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX +"Such a pair does not exist. Try entering from 0 to 7.";
-                    
-                }
+                SetLessonTimes(lesson);
+
                 if (!ViewData.ContainsKey(ScheduleConstants.ERROR_MESSAGE_KEY))
                 {
                     _context.Add(lesson);
@@ -153,6 +118,8 @@ namespace ScheduleApp.Controllers
 
             if (ModelState.IsValid)
             {
+                SetLessonTimes(lesson);
+
                 try
                 {
                     _context.Update(lesson);
@@ -220,7 +187,47 @@ namespace ScheduleApp.Controllers
             ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "Name");
             ViewData["TeacherId"] = new SelectList(_context.CustomUsers, "Id", "FullName");
         }
-        private void SetLessonTimes(Lesson lesson, int startH, int startM, int endH, int endM)
+        private void SetLessonTimes(Lesson lesson)
+        {
+            if (lesson.Number == 0)
+            {
+                SetLessonTimeByNumbers(lesson, 7, 30, 8, 50);
+            }
+            else if (lesson.Number == 1)
+            {
+                SetLessonTimeByNumbers(lesson, 9, 0, 10, 20);
+            }
+            else if (lesson.Number == 2)
+            {
+                SetLessonTimeByNumbers(lesson, 9, 30, 11, 50);
+            }
+            else if (lesson.Number == 3)
+            {
+                SetLessonTimeByNumbers(lesson, 12, 10, 13, 30);
+            }
+            else if (lesson.Number == 4)
+            {
+                SetLessonTimeByNumbers(lesson, 13, 40, 15, 0);
+            }
+            else if (lesson.Number == 5)
+            {
+                SetLessonTimeByNumbers(lesson, 15, 10, 16, 30);
+            }
+            else if (lesson.Number == 6)
+            {
+                SetLessonTimeByNumbers(lesson, 16, 40, 18, 0);
+            }
+            else if (lesson.Number == 7)
+            {
+                SetLessonTimeByNumbers(lesson, 18, 10, 19, 0);
+            }
+            else
+            {
+                ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Such a pair does not exist. Try entering from 0 to 7.";
+
+            }
+        }
+        private void SetLessonTimeByNumbers(Lesson lesson, int startH, int startM, int endH, int endM)
         {
             lesson.StartLesson = new DateTime(
                 lesson.Date.Year,
