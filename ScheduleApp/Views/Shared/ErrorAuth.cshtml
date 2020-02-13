@@ -1,0 +1,13 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "ErrorAuth";
+}
+
+<h2 class="text-danger">Log in to see your schedule.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>User authorization error detected.</strong>
+    </p>
+}
