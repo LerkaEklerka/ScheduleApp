@@ -60,9 +60,21 @@ namespace ScheduleApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(subject);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var existedSubject = await _context.Subjects
+                .FirstOrDefaultAsync(m => m.Name == subject.Name);
+
+                if (existedSubject == null)
+                {
+                    _context.Add(subject);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                else
+                {
+                    ViewData["ErrorMessage"] = "Помилка. Додати саме цей предмет неможливо. Предмет з такою назвою вже існує!";
+
+                }
             }
             return View(subject);
         }
@@ -97,23 +109,20 @@ namespace ScheduleApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var existedSubject = await _context.Subjects
+               .FirstOrDefaultAsync(m => m.Name == subject.Name);
+
+                if (existedSubject == null)
                 {
                     _context.Update(subject);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!SubjectExists(subject.SubjectId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ViewData["ErrorMessage"] = "Помилка. Змінити назву предмету неможливо. Предмет з такою назвою вже існує!";
+
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(subject);
         }

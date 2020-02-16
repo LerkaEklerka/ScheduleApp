@@ -107,23 +107,19 @@ namespace ScheduleApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var existedClassroom = await _context.Classrooms
+                .FirstOrDefaultAsync(m => m.Name == classroom.Name);
+
+                if (existedClassroom == null)
                 {
                     _context.Update(classroom);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ClassroomExists(classroom.ClassroomId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ViewData["ErrorMessage"] = "Помилка зміни номера аудиторії. Аудиторія з таким номером вже існує!";
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(classroom);
         }
