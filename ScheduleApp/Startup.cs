@@ -41,13 +41,13 @@ namespace ScheduleApp
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = "";
-                    options.ClientSecret = "";
+                    options.ClientId = Configuration.GetValue<string>("ServiceKeys:GoogleClientId");
+                    options.ClientSecret = Configuration.GetValue<string>("ServiceKeys:GoogleClientSecret");
                 })
                 .AddFacebook(facebookOptions => 
                 {
-                    facebookOptions.AppId = "";
-                    facebookOptions.AppSecret = "";
+                    facebookOptions.AppId = Configuration.GetValue<string>("ServiceKeys:FacebookAppId");
+                    facebookOptions.AppSecret = Configuration.GetValue<string>("ServiceKeys:FacebookAppSecret");
                 });
         }
 
