@@ -15,7 +15,9 @@
             <input type="hidden" asp-for="LessonId" />
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control"></select>
+                <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<LessonType>()">
+                    <option selected="selected" value=""></option>
+                </select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -27,16 +29,6 @@
                 <label asp-for="Date" class="control-label"></label>
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartLesson" class="control-label"></label>
-                <input asp-for="StartLesson" class="form-control" />
-                <span asp-validation-for="StartLesson" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndLesson" class="control-label"></label>
-                <input asp-for="EndLesson" class="form-control" />
-                <span asp-validation-for="EndLesson" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Info" class="control-label"></label>

@@ -56,15 +56,26 @@ namespace ScheduleApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,Name")] Group @group)
+        public async Task<IActionResult> Create([Bind("GroupId,Name")] Group group)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@group);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var existedGroup = await _context.Groups
+               .FirstOrDefaultAsync(m => m.Name == group.Name);
+
+                if (existedGroup == null)
+                {
+                    _context.Add(group);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewData["ErrorMessage"] = "Помилка. Додати саме цю назву групи неможливо. Група з цим номером/назвою вже існує!";
+
+                }
             }
-            return View(@group);
+            return View(group);
         }
 
         // GET: Group/Edit/5
@@ -97,23 +108,20 @@ namespace ScheduleApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(@group);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GroupExists(@group.GroupId))
+                    var existedGroup = await _context.Groups
+                    .FirstOrDefaultAsync(m => m.Name == group.Name);
+                    if (existedGroup == null)
                     {
-                        return NotFound();
-                    }
+                        _context.Update(@group);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                }
+
                     else
                     {
-                        throw;
+                     ViewData["ErrorMessage"] = "Помилка. Змінити назву групи неможливо. Група з цим номером/назвою вже існує!";
                     }
-                }
-                return RedirectToAction(nameof(Index));
+              
             }
             return View(@group);
         }
