@@ -8,6 +8,6 @@ namespace ScheduleApp.Constants
     public static class ScheduleConstants
     {
         public const string ERROR_MESSAGE_KEY = "ErrorMessage";
-        public const string ERROR_MESSAGE_PREFIX = "Error";
+        public const string ERROR_MESSAGE_PREFIX = "Error: ";
     }
 }
