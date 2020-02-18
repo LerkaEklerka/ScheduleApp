@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Data;
 using ScheduleApp.Models;
+using ScheduleApp.Constants;
 
 namespace ScheduleApp.Controllers
 {
@@ -72,7 +73,7 @@ namespace ScheduleApp.Controllers
 
                 else
                 {
-                    ViewData["ErrorMessage"] = "Помилка. Додати саме цей предмет неможливо. Предмет з такою назвою вже існує!";
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати саме цей предмет неможливо. Предмет з такою назвою вже існує!";
 
                 }
             }
@@ -114,13 +115,27 @@ namespace ScheduleApp.Controllers
 
                 if (existedSubject == null)
                 {
-                    _context.Update(subject);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(subject);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!SubjectExists(subject.SubjectId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ViewData["ErrorMessage"] = "Помилка. Змінити назву предмету неможливо. Предмет з такою назвою вже існує!";
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Змінити назву предмету неможливо. Предмет з такою назвою вже існує!";
 
                 }
             }

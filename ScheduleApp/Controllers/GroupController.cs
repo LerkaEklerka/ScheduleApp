@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Data;
 using ScheduleApp.Models;
+using ScheduleApp.Constants;
 
 namespace ScheduleApp.Controllers
 {
@@ -71,7 +72,7 @@ namespace ScheduleApp.Controllers
                 }
                 else
                 {
-                    ViewData["ErrorMessage"] = "Помилка. Додати саме цю назву групи неможливо. Група з цим номером/назвою вже існує!";
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати саме цю назву групи неможливо. Група з цим номером/назвою вже існує!";
 
                 }
             }
@@ -110,17 +111,30 @@ namespace ScheduleApp.Controllers
             {
                     var existedGroup = await _context.Groups
                     .FirstOrDefaultAsync(m => m.Name == group.Name);
-                    if (existedGroup == null)
+                if (existedGroup == null)
+                {
+                    try
                     {
                         _context.Update(@group);
                         await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                }
-
-                    else
-                    {
-                     ViewData["ErrorMessage"] = "Помилка. Змінити назву групи неможливо. Група з цим номером/назвою вже існує!";
                     }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!GroupExists(group.GroupId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Змінити назву групи неможливо. Група з цим номером/назвою вже існує!";
+                }
               
             }
             return View(@group);

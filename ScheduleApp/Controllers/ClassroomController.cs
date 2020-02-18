@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Data;
 using ScheduleApp.Models;
+using ScheduleApp.Constants;
 
 namespace ScheduleApp.Controllers
 {
@@ -71,7 +72,7 @@ namespace ScheduleApp.Controllers
                 } 
                 else
                 {
-                    ViewData["ErrorMessage"] = "Error during classroom adding. A classroom with the same name already exists";
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "A classroom with the same name already exists";
                 }
             }
             return View(classroom);
@@ -112,13 +113,27 @@ namespace ScheduleApp.Controllers
 
                 if (existedClassroom == null)
                 {
-                    _context.Update(classroom);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(classroom);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ClassroomExists(classroom.ClassroomId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ViewData["ErrorMessage"] = "Помилка зміни номера аудиторії. Аудиторія з таким номером вже існує!";
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Аудиторія з таким номером вже існує!";
                 }
             }
             return View(classroom);
