@@ -13,7 +13,7 @@ using ScheduleApp.Constants;
 
 namespace ScheduleApp.Controllers
 {
-    [Authorize(Roles = "Адміністратор")]
+   
     public class LessonController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,6 +24,7 @@ namespace ScheduleApp.Controllers
         }
 
         // GET: Lesson
+        [Authorize(Roles = "Адміністратор")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Lessons
@@ -35,6 +36,7 @@ namespace ScheduleApp.Controllers
         }
 
         // GET: Lesson/Details/5
+        [Authorize(Roles = "Адміністратор,Викладач,Студент")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -57,6 +59,7 @@ namespace ScheduleApp.Controllers
         }
 
         // GET: Lesson/Create
+        [Authorize(Roles = "Адміністратор")]
         public IActionResult Create()
         {
             PrepareLessonView();
@@ -68,6 +71,7 @@ namespace ScheduleApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Адміністратор")]
         public async Task<IActionResult> Create([Bind("LessonId,Type,Number,Date,StartLesson,EndLesson,Info,SubjectId,GroupId,TeacherId,ClassroomId")] Lesson lesson)
         {
             if (ModelState.IsValid)
@@ -98,6 +102,7 @@ namespace ScheduleApp.Controllers
         }
 
         // GET: Lesson/Edit/5
+        [Authorize(Roles = "Адміністратор")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -119,6 +124,7 @@ namespace ScheduleApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Адміністратор")]
         public async Task<IActionResult> Edit(int id, [Bind("LessonId,Type,Number,Date,StartLesson,EndLesson,Info,SubjectId,GroupId,TeacherId,ClassroomId")] Lesson lesson)
         {
             if (id != lesson.LessonId)
@@ -167,6 +173,7 @@ namespace ScheduleApp.Controllers
         }
 
         // GET: Lesson/Delete/5
+        [Authorize(Roles = "Адміністратор")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -191,6 +198,7 @@ namespace ScheduleApp.Controllers
         // POST: Lesson/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Адміністратор")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var lesson = await _context.Lessons.FindAsync(id);
