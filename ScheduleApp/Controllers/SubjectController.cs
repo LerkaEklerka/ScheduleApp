@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ScheduleApp.Data;
 using ScheduleApp.Models;
+using ScheduleApp.Constants;
 
 namespace ScheduleApp.Controllers
 {
@@ -60,9 +61,21 @@ namespace ScheduleApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(subject);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var existedSubject = await _context.Subjects
+                .FirstOrDefaultAsync(m => m.Name == subject.Name);
+
+                if (existedSubject == null)
+                {
+                    _context.Add(subject);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                else
+                {
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати саме цей предмет неможливо. Предмет з такою назвою вже існує!";
+
+                }
             }
             return View(subject);
         }
@@ -97,23 +110,34 @@ namespace ScheduleApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var existedSubject = await _context.Subjects
+               .FirstOrDefaultAsync(m => m.Name == subject.Name);
+
+                if (existedSubject == null)
                 {
-                    _context.Update(subject);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(subject);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!SubjectExists(subject.SubjectId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!SubjectExists(subject.SubjectId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Змінити назву предмету неможливо. Предмет з такою назвою вже існує!";
+
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(subject);
         }
