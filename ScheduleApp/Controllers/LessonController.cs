@@ -74,11 +74,21 @@ namespace ScheduleApp.Controllers
             {
                 SetLessonTimes(lesson);
 
-                if (!ViewData.ContainsKey(ScheduleConstants.ERROR_MESSAGE_KEY))
+                var existedLesson = await _context.Lessons
+                     .Where(m => m.Date == lesson.Date)
+                     .Where(m => m.GroupId == lesson.GroupId)
+                     .Where(m => m.Number == lesson.Number)
+                     .FirstOrDefaultAsync();
+
+                if (existedLesson == null)
                 {
                     _context.Add(lesson);
                    await _context.SaveChangesAsync();
                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати заняття не можливо. У обраної групи заняття в заданий час вже існує.";
                 }
             }
 
@@ -120,23 +130,37 @@ namespace ScheduleApp.Controllers
             {
                 SetLessonTimes(lesson);
 
-                try
+                var existedLesson = await _context.Lessons
+                     .Where(m => m.Date == lesson.Date)
+                     .Where(m => m.GroupId == lesson.GroupId)
+                     .Where(m => m.Number == lesson.Number)
+                     .FirstOrDefaultAsync();
+
+                if (existedLesson == null)
                 {
-                    _context.Update(lesson);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(lesson);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!LessonExists(lesson.LessonId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!LessonExists(lesson.LessonId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати заняття не можливо. У обраної групи заняття в заданий час вже існує.";
                 }
-                return RedirectToAction(nameof(Index));
+               
             }
             PrepareLessonView();
             return View(lesson);
@@ -199,7 +223,7 @@ namespace ScheduleApp.Controllers
             }
             else if (lesson.Number == 2)
             {
-                SetLessonTimeByNumbers(lesson, 9, 30, 11, 50);
+                SetLessonTimeByNumbers(lesson, 10, 30, 11, 50);
             }
             else if (lesson.Number == 3)
             {
