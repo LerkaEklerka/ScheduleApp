@@ -111,12 +111,7 @@ namespace ScheduleApp.Controllers
             return View(await teacherLessonsList.ToListAsync());
         }
 
-        public async Task<IActionResult> AdminHome()
-        {
-            return await Task.Run(() => View());
-        }
-
-        public IActionResult Manage()
+               public IActionResult Manage()
         {
             return View();
         }
