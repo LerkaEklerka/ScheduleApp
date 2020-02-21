@@ -36,7 +36,7 @@ namespace ScheduleApp.Controllers
             signInManager = _signInManager;
         }
 
-        public async Task<IActionResult> Index(DateTime? date)
+        public async Task<IActionResult> Index()
         {
             if (!signInManager.IsSignedIn(User))
             {
