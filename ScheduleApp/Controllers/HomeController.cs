@@ -40,34 +40,29 @@ namespace ScheduleApp.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return RedirectToAction(nameof(ErrorAuth));
+                return await Task.Run(() => View());
             }
-
-            var filterDate = date != null ? date : DateTime.Today;
+                       
             User user = dbContext.CustomUsers.SingleOrDefault(u => u.UserName == User.Identity.Name);
 
             if (user != null)
             {
-                ViewData["FilterDate"] = filterDate;
-                if (user.GroupId != null)
+                if (User.IsInRole("Студент"))
                 {
-                    var applicationDbContext = dbContext.Lessons
-                    .Where(l => l.Date == filterDate)
-                    .Where(l => l.GroupId == user.GroupId)
-                    .Include(l => l.Classroom)
-                    .Include(l => l.Group)
-                    .Include(l => l.Subject)
-                    .Include(l => l.Teacher);
-
-                    
-                    return View(await applicationDbContext.ToListAsync());
+                    return RedirectToAction(nameof(StudentHome), (DateTime.Today, user));
+                }
+                else if (User.IsInRole("Викладач"))
+                {
+                    return RedirectToAction(nameof(TeacherHome));
+                }
+                else if (User.IsInRole("Адміністратор"))
+                {
+                    return RedirectToAction(nameof(Manage));
                 }
                 else
                 {
-                    var result = await Task.Run(() => new List<Lesson>());
-                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + ": You do not belong to any group. Ask an administrator to add you to your group list.";                   
-                    return View(result);
-                }
+                    return RedirectToAction(nameof(ErrorAuth));
+                }               
             }
             else
             {
@@ -76,8 +71,47 @@ namespace ScheduleApp.Controllers
 
         }
 
-        
-        public IActionResult Manage()
+        public async Task<IActionResult> StudentHome(DateTime? date, User user)
+        {
+            var filterDate = date != null ? date : DateTime.Today;
+            ViewData["FilterDate"] = filterDate;
+            if (user.GroupId != null)
+            {
+                var applicationDbContext = dbContext.Lessons
+                .Where(l => l.Date == filterDate)
+                .Where(l => l.GroupId == user.GroupId)
+                .Include(l => l.Classroom)
+                .Include(l => l.Group)
+                .Include(l => l.Subject)
+                .Include(l => l.Teacher);
+
+
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var result = await Task.Run(() => new List<Lesson>());
+                ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + ": You do not belong to any group. Ask an administrator to add you to your group list.";
+                return View(result);
+            }
+        }
+
+        public async Task<IActionResult> TeacherHome()
+        {
+            DateTime startAtMonday = DateTime.Now.AddDays(DayOfWeek.Monday - DateTime.Now.DayOfWeek);
+
+            var teacherLessonsList = dbContext.Lessons
+                .Where(l => l.Date >= startAtMonday)
+                .OrderBy(l => l.Date)
+                .ThenBy(l => l.Number)
+                .Include(l => l.Classroom)
+                .Include(l => l.Group)
+                .Include(l => l.Subject)
+                .Include(l => l.Teacher);
+            return View(await teacherLessonsList.ToListAsync());
+        }
+
+               public IActionResult Manage()
         {
             return View();
         }
