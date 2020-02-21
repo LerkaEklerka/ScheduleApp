@@ -36,7 +36,7 @@ namespace ScheduleApp.Controllers
             signInManager = _signInManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? date)
         {
             if (!signInManager.IsSignedIn(User))
             {
@@ -61,12 +61,12 @@ namespace ScheduleApp.Controllers
                 }
                 else
                 {
-                    return RedirectToAction(nameof(Error));
+                    return RedirectToAction(nameof(ErrorAuth));
                 }               
             }
             else
             {
-                return RedirectToAction(nameof(ErrorAuth));
+                return RedirectToAction(nameof(Error));
             }
 
         }
