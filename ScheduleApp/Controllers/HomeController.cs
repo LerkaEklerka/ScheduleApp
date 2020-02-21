@@ -40,7 +40,7 @@ namespace ScheduleApp.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return RedirectToAction(nameof(ErrorAuth));
+                return await Task.Run(() => View());
             }
                        
             User user = dbContext.CustomUsers.SingleOrDefault(u => u.UserName == User.Identity.Name);
@@ -66,7 +66,7 @@ namespace ScheduleApp.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(Error));
+                return RedirectToAction(nameof(ErrorAuth));
             }
 
         }
