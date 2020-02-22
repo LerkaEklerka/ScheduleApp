@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "TeacherHome";
     DateTime filterDate = ViewBag.FilterDate;
+    int filter = ViewBag.FilterOption;
 }
 <div class="text-center">
     <div class="row">
@@ -16,14 +17,17 @@
         </div>
     </div>
     <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input onchange="check()" type="radio" name="options" id="workingDays" autocomplete="off" checked> Робочі дні
+        <label class="btn btn-secondary @(filter == 1 ? "active" : "")">
+            <input onchange="check()" type="radio" name="options" id="workingDays" 
+                   autocomplete="off" @(filter == 1 ? "checked" : "")> Робочі дні
         </label>
-        <label class="btn btn-secondary">
-            <input onchange="check()" type="radio" name="options" id="withWeekends" autocomplete="off"> З вихідними
+        <label class="btn btn-secondary @(filter == 2 ? "active" : "")">
+            <input onchange="check()" type="radio" name="options" id="withWeekends" 
+                   autocomplete="off" @(filter == 2 ? "checked" : "")> З вихідними
         </label>
-        <label class="btn btn-secondary">
-            <input onchange="check()" type="radio" name="options" id="allDays" autocomplete="off"> Всі дні
+        <label class="btn btn-secondary @(filter == 3 ? "active" : "")">
+            <input onchange="check()" type="radio" name="options" id="allDays" 
+                   autocomplete="off" @(filter == 3 ? "checked" : "")> Всі дні
         </label>
     </div>
     <div id="scrolling_div" class="list-inline" style="overflow-x:auto; white-space:nowrap">
@@ -47,7 +51,8 @@
             var weekend = (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
             <div @(date == filterDate ? "id=activeBlock ":"")
                  class="list-inline-item @(lessonsAbsent?"lessonsAbsent":"") @(weekend?"weekend":"")"
-                 @(lessonsAbsent || weekend ? "hidden" : "")>
+                 @(filter == 1 ? lessonsAbsent || weekend ? "hidden" : "" : "")
+                 @(filter == 2 ? lessonsAbsent ? "hidden" : "" : "")>
                 <div class="list-group">
                     <label class="list-group-item @(date == filterDate ? "active":"") list-group-item-success mb-1">
                         @date.ToShortDateString()
@@ -91,8 +96,19 @@
     var weekends = document.getElementsByClassName("weekend");
 
     function reloadWithNewDate(dateInput) {
+        var filter;
+        if (document.getElementById("workingDays").checked == true) {
+            filter = 1;
+        }
+        if (document.getElementById("withWeekends").checked == true) {
+            filter = 2;
+        }
+        if (document.getElementById("allDays").checked == true) {
+            filter = 3;
+        }
+
         var value = dateInput.value;
-        location.href = '@Url.Action("TeacherHome", "Home")?newDate=' + value;
+        location.href = '@Url.Action("TeacherHome", "Home")?newDate=' + value + '&filter=' + filter;
     }
 
     function check() {

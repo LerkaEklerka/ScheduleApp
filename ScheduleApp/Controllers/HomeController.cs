@@ -96,8 +96,11 @@ namespace ScheduleApp.Controllers
             }
         }
 
-        public async Task<IActionResult> TeacherHome(DateTime? newDate)
+        public async Task<IActionResult> TeacherHome(DateTime? newDate, int? filter)
         {
+            //radio option
+            ViewData["FilterOption"] = filter ?? 1;
+
             var teacherLessonsList = dbContext.Lessons
                 .Include(l => l.Classroom)
                 .Include(l => l.Group)
