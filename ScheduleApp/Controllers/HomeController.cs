@@ -96,22 +96,38 @@ namespace ScheduleApp.Controllers
             }
         }
 
-        public async Task<IActionResult> TeacherHome()
+        public async Task<IActionResult> TeacherHome(DateTime? newDate)
         {
-            DateTime startAtMonday = DateTime.Now.AddDays(DayOfWeek.Monday - DateTime.Now.DayOfWeek);
-
             var teacherLessonsList = dbContext.Lessons
-                .Where(l => l.Date >= startAtMonday)
-                .OrderBy(l => l.Date)
-                .ThenBy(l => l.Number)
                 .Include(l => l.Classroom)
                 .Include(l => l.Group)
                 .Include(l => l.Subject)
                 .Include(l => l.Teacher);
+
+            DateTime filterDate = newDate ?? DateTime.Today;
+            ViewData["FilterDate"] = filterDate;
+
+            var firstDayOfMonth = new DateTime(filterDate.Year, filterDate.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+            var datesList = new List<DateTime>();
+            for (var dt = firstDayOfMonth; dt <= lastDayOfMonth; dt = dt.AddDays(1))
+            {
+                datesList.Add(dt);
+            }
+            ViewData["DatesList"] = datesList;
+
+            var numbersList = new List<string>
+            {
+                "7:30 - 8:50", "9:00 - 10:20", "10:30 - 11:50", "12:10 - 13:30",
+                "13:40 - 15:00", "15:10 - 16:30", "16:40 - 18:00", "18:10 - 19:00"
+            };
+            ViewData["NumbersList"] = numbersList;
+
             return View(await teacherLessonsList.ToListAsync());
         }
 
-               public IActionResult Manage()
+        public IActionResult Manage()
         {
             return View();
         }
