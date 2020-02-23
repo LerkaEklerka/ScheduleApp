@@ -22,7 +22,13 @@
         <thead class="thead-light">
             <tr>
                 <th scope="col">
-                    @Html.DisplayNameFor(model => model.Number)
+                    Номер пари
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.StartLesson)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.EndLesson)
                 </th>
                 <th scope="col">
                     @Html.DisplayNameFor(model => model.Subject)
@@ -32,32 +38,32 @@
                 </th>
                 <th scope="col">
                     @Html.DisplayNameFor(model => model.Teacher)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.Group)
-                </th>
+                </th>                
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <th scope="row">
-                        @Html.DisplayFor(modelItem => item.Number)
-                    </th>
-                    <th>
-                        @Html.DisplayFor(modelItem => item.Subject.Name)
-                    </th>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Classroom.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Teacher.FullName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Group.Name)
-                    </td>
-                </tr>
+            <tr>
+                <th scope="row">
+                    <a class="btn btn-outline-dark btn-lg btn-block" asp-controller="Number" asp-action="Details">@Html.DisplayFor(modelItem => item.Number)</a>  
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.StartLesson)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.EndLesson)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Subject.Name)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Teacher.FullName)
+                </td>               
+            </tr>
             }
         </tbody>
     </table>

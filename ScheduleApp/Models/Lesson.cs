@@ -27,7 +27,7 @@ namespace ScheduleApp.Models
 
         [Required]
         [Range(0, 7)]
-        [Display(Name = "Номер пари(не по змінам)")]
+        [Display(Name = "Номер пари")]
         public int Number { get; set; }
        
         [Required]
