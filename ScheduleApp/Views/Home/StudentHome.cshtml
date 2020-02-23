@@ -46,7 +46,7 @@
             {
             <tr>
                 <th scope="row">
-                    <a class="btn btn-outline-dark btn-lg btn-block" asp-controller="Number" asp-action="Details">@Html.DisplayFor(modelItem => item.Number)</a>  
+                    <a asp-controller="Lesson" asp-action="Details" asp-route-id="@item.LessonId">@Html.DisplayFor(modelItem => item.Number)</a>                   
                 </th>
                 <th>
                     @Html.DisplayFor(modelItem => item.StartLesson)
