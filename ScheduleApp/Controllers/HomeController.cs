@@ -49,7 +49,7 @@ namespace ScheduleApp.Controllers
             {
                 if (User.IsInRole("Студент"))
                 {
-                    return RedirectToAction(nameof(StudentHome), (DateTime.Today, user));
+                    return RedirectToAction(nameof(StudentHome), (DateTime.Today));
                 }
                 else if (User.IsInRole("Викладач"))
                 {
@@ -71,8 +71,10 @@ namespace ScheduleApp.Controllers
 
         }
 
-        public async Task<IActionResult> StudentHome(DateTime? date, User user)
+        public async Task<IActionResult> StudentHome(DateTime? date)
         {
+            User user = dbContext.CustomUsers.SingleOrDefault(u => u.UserName == User.Identity.Name);
+
             var filterDate = date != null ? date : DateTime.Today;
             ViewData["FilterDate"] = filterDate;
             if (user.GroupId != null)
