@@ -1,0 +1,128 @@
+﻿@model IEnumerable<ScheduleApp.Models.Lesson>
+@{
+    ViewData["Title"] = "TeacherHome";
+    DateTime filterDate = ViewBag.FilterDate;
+    int filter = ViewBag.FilterOption;
+}
+<div class="text-center">
+    <div class="row">
+        <div class="input-group mb-3 col-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">День</span>
+            </div>
+            <input onchange="reloadWithNewDate(this)" type="date"
+                   asp-for="@filterDate" class="form-control"
+                   aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                   placeholder="@filterDate">
+        </div>
+    </div>
+    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+        <label class="btn btn-secondary @(filter == 1 ? "active" : "")">
+            <input onchange="check()" type="radio" name="options" id="workingDays" 
+                   autocomplete="off" @(filter == 1 ? "checked" : "")> Робочі дні
+        </label>
+        <label class="btn btn-secondary @(filter == 2 ? "active" : "")">
+            <input onchange="check()" type="radio" name="options" id="withWeekends" 
+                   autocomplete="off" @(filter == 2 ? "checked" : "")> З вихідними
+        </label>
+        <label class="btn btn-secondary @(filter == 3 ? "active" : "")">
+            <input onchange="check()" type="radio" name="options" id="allDays" 
+                   autocomplete="off" @(filter == 3 ? "checked" : "")> Всі дні
+        </label>
+    </div>
+    <div id="scrolling_div" class="list-inline" style="overflow-x:auto; white-space:nowrap">
+        <div class="list-inline-item w-5" style="position:sticky; left:0; z-index:10">
+            <div class="list-group list-group-flush">
+                <label class="list-group-item list-group-item-info border border-info mb-1">
+                    День та час
+                </label>
+                @foreach (var item in ViewBag.NumbersList)
+                {
+                    <div class="list-group-item">
+                        <div>@item</div>
+                    </div>
+                }
+            </div>
+        </div>
+        @foreach (var date in ViewBag.DatesList)
+        {
+            var lessonNum = 0;
+            var lessonsAbsent = !Model.Any(l => l.Date == date);
+            var weekend = (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+            <div @(date == filterDate ? "id=activeBlock ":"")
+                 class="list-inline-item @(lessonsAbsent?"lessonsAbsent":"") @(weekend?"weekend":"")"
+                 @(filter == 1 ? lessonsAbsent || weekend ? "hidden" : "" : "")
+                 @(filter == 2 ? lessonsAbsent ? "hidden" : "" : "")>
+                <div class="list-group">
+                    <label class="list-group-item @(date == filterDate ? "active":"") list-group-item-success mb-1">
+                        @date.ToShortDateString()
+                    </label>
+                    @foreach (var item in Model.Where(l => l.Date == date).OrderBy(l => l.Number))
+                    {
+                        @if (item.Number > lessonNum)
+                        {
+                            @for (var i = lessonNum; i < item.Number; i++)
+                            {
+                                <div class="list-group-item btn btn-outline-warning">
+                                    <div>Вікно</div>
+                                </div>
+                                lessonNum++;
+                            }
+                        }
+                        <div class="list-group-item btn btn-outline-info"
+                             onclick="window.location.href='@Url.Action("Details","Lesson")/@item.LessonId'">
+                            @if (item.Date.DayOfWeek == date.DayOfWeek)
+                            {
+                                <div>
+                                    @Html.DisplayFor(modelItem => item.Subject.Name)
+                                    каб.@Html.DisplayFor(modelItem => item.Classroom.Name)
+                                    @Html.DisplayFor(modelItem => item.Group.Name)
+                                </div>
+                            }
+                        </div>
+                        lessonNum++;
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    window.onload = function exampleFunction() {
+        document.getElementById("activeBlock").scrollIntoView();
+    }
+
+    var lessonsAbsent = document.getElementsByClassName("lessonsAbsent");
+    var weekends = document.getElementsByClassName("weekend");
+
+    function reloadWithNewDate(dateInput) {
+        var filter;
+        if (document.getElementById("workingDays").checked == true) {
+            filter = 1;
+        }
+        if (document.getElementById("withWeekends").checked == true) {
+            filter = 2;
+        }
+        if (document.getElementById("allDays").checked == true) {
+            filter = 3;
+        }
+
+        var value = dateInput.value;
+        location.href = '@Url.Action("TeacherHome", "Home")?newDate=' + value + '&filter=' + filter;
+    }
+
+    function check() {
+        if (document.getElementById("workingDays").checked == true) {
+            for(var i=0; i<lessonsAbsent.length; i++) lessonsAbsent[i].hidden = true;
+            for(var i=0; i<weekends.length; i++) weekends[i].hidden = true;
+        }
+        if (document.getElementById("withWeekends").checked == true) {
+            for (var i = 0; i < weekends.length; i++) weekends[i].hidden = false;
+            for(var i=0; i<lessonsAbsent.length; i++) lessonsAbsent[i].hidden = true;
+        }
+        if (document.getElementById("allDays").checked == true) {
+            for(var i=0; i<lessonsAbsent.length; i++) lessonsAbsent[i].hidden = false;
+            for(var i=0; i<weekends.length; i++) weekends[i].style.hidden = false;
+        }
+    }
+</script>

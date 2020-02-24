@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ScheduleApp.Models.Lesson>
+@{
+    ViewData["Title"] = "Student Page";
+    DateTime filterDate = ViewBag.FilterDate;
+}
+<partial name="ErrorMessage" model="ViewBag.ErrorMessage" />
+
+<div class="text-center">
+    <h1 class="display-4">Розклад</h1>
+    <div class="row">
+        <div class="input-group mb-3 col-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">День</span>
+            </div>
+            <input onchange="reloadWithNewDate(this)" type="date"
+                   asp-for="@filterDate" class="form-control"
+                   aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                   placeholder="@filterDate">
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Number)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Subject)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Classroom)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Teacher)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Group)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th scope="row">
+                        @Html.DisplayFor(modelItem => item.Number)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(modelItem => item.Subject.Name)
+                    </th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Classroom.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Teacher.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Group.Name)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    function reloadWithNewDate(dateInput) {
+        var value = dateInput.value;
+        location.href = '@Url.Action("StudentHome", "Home")?date=' + value;
+    }
+</script>

@@ -36,38 +36,33 @@ namespace ScheduleApp.Controllers
             signInManager = _signInManager;
         }
 
-        public async Task<IActionResult> Index(DateTime? date)
+        public async Task<IActionResult> Index()
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return RedirectToAction(nameof(ErrorAuth));
+                return await Task.Run(() => View());
             }
-
-            var filterDate = date != null ? date : DateTime.Today;
+                       
             User user = dbContext.CustomUsers.SingleOrDefault(u => u.UserName == User.Identity.Name);
 
             if (user != null)
             {
-                ViewData["FilterDate"] = filterDate;
-                if (user.GroupId != null)
+                if (User.IsInRole("Студент"))
                 {
-                    var applicationDbContext = dbContext.Lessons
-                    .Where(l => l.Date == filterDate)
-                    .Where(l => l.GroupId == user.GroupId)
-                    .Include(l => l.Classroom)
-                    .Include(l => l.Group)
-                    .Include(l => l.Subject)
-                    .Include(l => l.Teacher);
-
-                    
-                    return View(await applicationDbContext.ToListAsync());
+                    return RedirectToAction(nameof(StudentHome), (DateTime.Today));
+                }
+                else if (User.IsInRole("Викладач"))
+                {
+                    return RedirectToAction(nameof(TeacherHome));
+                }
+                else if (User.IsInRole("Адміністратор"))
+                {
+                    return RedirectToAction(nameof(Manage));
                 }
                 else
                 {
-                    var result = await Task.Run(() => new List<Lesson>());
-                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + ": You do not belong to any group. Ask an administrator to add you to your group list.";                   
-                    return View(result);
-                }
+                    return RedirectToAction(nameof(ErrorAuth));
+                }               
             }
             else
             {
@@ -76,7 +71,67 @@ namespace ScheduleApp.Controllers
 
         }
 
-        
+        public async Task<IActionResult> StudentHome(DateTime? date)
+        {
+            User user = dbContext.CustomUsers.SingleOrDefault(u => u.UserName == User.Identity.Name);
+
+            var filterDate = date != null ? date : DateTime.Today;
+            ViewData["FilterDate"] = filterDate;
+            if (user.GroupId != null)
+            {
+                var applicationDbContext = dbContext.Lessons
+                .Where(l => l.Date == filterDate)
+                .Where(l => l.GroupId == user.GroupId)
+                .Include(l => l.Classroom)
+                .Include(l => l.Group)
+                .Include(l => l.Subject)
+                .Include(l => l.Teacher);
+
+
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var result = await Task.Run(() => new List<Lesson>());
+                ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + ": You do not belong to any group. Ask an administrator to add you to your group list.";
+                return View(result);
+            }
+        }
+
+        public async Task<IActionResult> TeacherHome(DateTime? newDate, int? filter)
+        {
+            //radio option
+            ViewData["FilterOption"] = filter ?? 1;
+
+            var teacherLessonsList = dbContext.Lessons
+                .Include(l => l.Classroom)
+                .Include(l => l.Group)
+                .Include(l => l.Subject)
+                .Include(l => l.Teacher);
+
+            DateTime filterDate = newDate ?? DateTime.Today;
+            ViewData["FilterDate"] = filterDate;
+
+            var firstDayOfMonth = new DateTime(filterDate.Year, filterDate.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+            var datesList = new List<DateTime>();
+            for (var dt = firstDayOfMonth; dt <= lastDayOfMonth; dt = dt.AddDays(1))
+            {
+                datesList.Add(dt);
+            }
+            ViewData["DatesList"] = datesList;
+
+            var numbersList = new List<string>
+            {
+                "7:30 - 8:50", "9:00 - 10:20", "10:30 - 11:50", "12:10 - 13:30",
+                "13:40 - 15:00", "15:10 - 16:30", "16:40 - 18:00", "18:10 - 19:00"
+            };
+            ViewData["NumbersList"] = numbersList;
+
+            return View(await teacherLessonsList.ToListAsync());
+        }
+
         public IActionResult Manage()
         {
             return View();
