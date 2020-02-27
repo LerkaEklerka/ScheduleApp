@@ -78,21 +78,33 @@ namespace ScheduleApp.Controllers
             {
                 SetLessonTimes(lesson);
 
-                var existedLesson = await _context.Lessons
+                var existedLessonByGroup = await _context.Lessons
                      .Where(m => m.Date == lesson.Date)
                      .Where(m => m.GroupId == lesson.GroupId)
                      .Where(m => m.Number == lesson.Number)
                      .FirstOrDefaultAsync();
 
-                if (existedLesson == null)
-                {
-                    _context.Add(lesson);
-                   await _context.SaveChangesAsync();
-                   return RedirectToAction(nameof(Index));
-                }
-                else
+                var existedLessonByTeacher = await _context.Lessons
+                     .Where(m => m.Date == lesson.Date)
+                     .Where(m => m.TeacherId == lesson.TeacherId)
+                     .Where(m => m.Number == lesson.Number)
+                     .FirstOrDefaultAsync();
+
+                if (existedLessonByGroup != null)
                 {
                     ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати заняття не можливо. У обраної групи заняття в заданий час вже існує.";
+                }
+                
+                if (existedLessonByTeacher != null)
+                {
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати заняття не можливо. У обраного викладача заняття в заданий час вже існує.";
+                }
+
+                if (existedLessonByGroup == null && existedLessonByTeacher == null)
+                {
+                    _context.Add(lesson);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
@@ -136,13 +148,29 @@ namespace ScheduleApp.Controllers
             {
                 SetLessonTimes(lesson);
 
-                var existedLesson = await _context.Lessons
+                var existedLessonByGroup = await _context.Lessons
                      .Where(m => m.Date == lesson.Date)
                      .Where(m => m.GroupId == lesson.GroupId)
                      .Where(m => m.Number == lesson.Number)
                      .FirstOrDefaultAsync();
 
-                if (existedLesson == null)
+                var existedLessonByTeacher = await _context.Lessons
+                    .Where(m => m.Date == lesson.Date)
+                    .Where(m => m.TeacherId == lesson.TeacherId)
+                    .Where(m => m.Number == lesson.Number)
+                    .FirstOrDefaultAsync();
+
+                if (existedLessonByGroup != null)
+                {
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати заняття не можливо. У обраної групи заняття в заданий час вже існує.";
+                }
+
+                if (existedLessonByTeacher != null)
+                {
+                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати заняття не можливо. У обраного викладача заняття в заданий час вже існує.";
+                }
+
+                if (existedLessonByGroup == null && existedLessonByTeacher == null)
                 {
                     try
                     {
@@ -162,11 +190,7 @@ namespace ScheduleApp.Controllers
                     }
                     return RedirectToAction(nameof(Index));
                 }
-                else
-                {
-                    ViewData[ScheduleConstants.ERROR_MESSAGE_KEY] = ScheduleConstants.ERROR_MESSAGE_PREFIX + "Додати заняття не можливо. У обраної групи заняття в заданий час вже існує.";
-                }
-               
+                           
             }
             PrepareLessonView();
             return View(lesson);
