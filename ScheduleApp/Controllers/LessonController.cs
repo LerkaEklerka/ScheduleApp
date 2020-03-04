@@ -25,14 +25,55 @@ namespace ScheduleApp.Controllers
 
         // GET: Lesson
         [Authorize(Roles = "Адміністратор")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(SortState sortOrder = SortState.DateAsc)
         {
-            var applicationDbContext = _context.Lessons
+            //var applicationDbContext  = _context.Lessons
+            //    .Include(l => l.Classroom)
+            //   .Include(l => l.Group)
+            //   .Include(l => l.Subject)
+            //   .Include(l => l.Teacher);
+            // return View(await applicationDbContext.ToListAsync());
+
+            IQueryable<Lesson> lessons = _context.Lessons
                 .Include(l => l.Classroom)
-                .Include(l => l.Group)
-                .Include(l => l.Subject)
-                .Include(l => l.Teacher);
-            return View(await applicationDbContext.ToListAsync());
+                 .Include(l => l.Group)
+                 .Include(l => l.Subject)
+                 .Include(l => l.Teacher);
+            
+            ViewData["DateSort"] = sortOrder == SortState.DateAsc ? SortState.DateDesc : SortState.DateAsc;
+            ViewData["TypeSort"] = sortOrder == SortState.TypeAsc ? SortState.TypeDesc : SortState.TypeAsc;
+            ViewData["NumberSort"] = sortOrder == SortState.NumberAsc ? SortState.NumberDesc : SortState.NumberAsc;
+            ViewData["StartLessonSort"] = sortOrder == SortState.StartLessonAsc ? SortState.StartLessonDesc : SortState.StartLessonAsc;
+            ViewData["EndLessonSort"] = sortOrder == SortState.EndLessonAsc ? SortState.EndLessonDesc : SortState.EndLessonAsc;
+            ViewData["SubjectSort"] = sortOrder == SortState.SubjectAsc ? SortState.SubjectDesc : SortState.SubjectAsc;
+            ViewData["GroupSort"] = sortOrder == SortState.GroupAsc ? SortState.GroupDesc : SortState.GroupAsc;
+            ViewData["TeacherSort"] = sortOrder == SortState.TeacherAsc ? SortState.TeacherDesc : SortState.TeacherAsc;
+            ViewData["ClassroomSort"] = sortOrder == SortState.ClassroomAsc ? SortState.ClassroomDesc : SortState.ClassroomAsc;
+
+            lessons = sortOrder switch
+            {
+                
+                SortState.DateDesc => lessons.OrderByDescending(s => s.Date),
+                SortState.TypeAsc => lessons.OrderBy(s => s.Type),
+                SortState.TypeDesc => lessons.OrderByDescending(s => s.Type),
+                SortState.NumberAsc => lessons.OrderBy(s => s.Number),
+                SortState.NumberDesc => lessons.OrderByDescending(s => s.Number),
+                SortState.StartLessonAsc => lessons.OrderBy(s => s.StartLesson),
+                SortState.StartLessonDesc =>lessons.OrderByDescending(s => s.StartLesson),
+                SortState.EndLessonAsc => lessons.OrderBy(s => s.EndLesson),
+                SortState.EndLessonDesc => lessons.OrderByDescending(s => s.EndLesson),
+                SortState.SubjectAsc => lessons.OrderBy(s => s.Subject),
+                SortState.SubjectDesc => lessons.OrderByDescending(s => s.Subject),
+                SortState.GroupAsc => lessons.OrderBy(s => s.Group),
+                SortState.GroupDesc => lessons.OrderByDescending(s => s.Group),
+                SortState.TeacherAsc => lessons.OrderBy(s => s.Teacher),
+                SortState.TeacherDesc => lessons.OrderByDescending(s => s.Teacher),
+                SortState.ClassroomAsc => lessons.OrderBy(s => s.Classroom),
+                SortState.ClassroomDesc => lessons.OrderByDescending(s => s.Classroom),
+                _ => lessons.OrderBy(s => s.Date),
+            };
+            return View(await lessons.AsNoTracking().ToListAsync());
+            
         }
 
         // GET: Lesson/Details/5
