@@ -20,11 +20,13 @@ namespace ScheduleApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserController(ApplicationDbContext context, UserManager<User> userManager)
+        public UserController(ApplicationDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _context = context;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: /<controller>/
@@ -93,9 +95,75 @@ namespace ScheduleApp.Controllers
             return View(user);
         }
 
+        public IActionResult Register()
+        {
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name");
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = new User { Email = model.Email, UserName = model.Email, FirstName = model.FirstName, LastName = model.LastName, GroupId = model.GroupId };
+                // добавляем пользователя
+                var result = await _userManager.CreateAsync(user, model.Password);                
+                if (result.Succeeded)
+                {
+                    // установка куки
+                    //await _signInManager.SignInAsync(user, false);
+                    return RedirectToAction("Manage", "Home");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name");
+            return View(model);
+        }
+
+        // GET: User/Delete/5
+        [Authorize(Roles = "Адміністратор")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users
+                .Include(l => l.Group)
+                .Include(l => l.Lessons)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        // POST: User/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Адміністратор")]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        
         private bool UserExists(string id)
         {
             return _context.CustomUsers.Any(e => e.Id == id);
         }
+
+
     }
 }
