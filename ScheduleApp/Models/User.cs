@@ -29,5 +29,6 @@ namespace ScheduleApp.Models
         [Display(Name = "Група")]
         public virtual Group Group { get; set; }
         public virtual ICollection<Lesson> Lessons { get; set; }
+
     }
 }

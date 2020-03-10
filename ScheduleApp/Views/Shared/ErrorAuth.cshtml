@@ -3,11 +3,11 @@
     ViewData["Title"] = "ErrorAuth";
 }
 
-<h2 align="center" class="text-danger">Log in to see your schedule.</h2>
+    <h2 align="center" class="text-danger">User authorization error detected.</h2>
 
 @if (Model.ShowRequestId)
 {
     <p align="center">
-        <strong>User authorization error detected.</strong>
+        <strong>You may not have a role. Contact your administrator to select a role for you.</strong>
     </p>
 }
